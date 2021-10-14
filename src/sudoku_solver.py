@@ -1,16 +1,32 @@
 # coding=utf-8
 import sys
 
+from colorama import Fore, init
+
+init(autoreset=True)
+
 
 class SudokuSolver:
+
     def __init__(self, nums):
+        self.nums = self.nums_to_grid(nums)
         self.grid = self.nums_to_grid(nums)
         self.find_solution()
-    
+
+    @staticmethod
+    def add_color(num):
+        return Fore.LIGHTBLUE_EX + str(num) + Fore.RESET
+
     def puzzle(self):
-        for row in self.grid:
-            print(*row, sep='\t')
-    
+        for row in zip(self.grid, self.nums):
+            print(
+                *(
+                    self.add_color(row[0][i]) if row[1][i] == 0 else row[0][i]
+                    for i in range(9)
+                ),
+                sep='\t'
+                )
+
     def solve(self, row, col, num):
         for x in range(9):
             if self.grid[row][x] == num or self.grid[x][col] == num:
@@ -22,7 +38,7 @@ class SudokuSolver:
                 if self.grid[i + start_row][j + start_col] == num:
                     return False
         return True
-    
+
     def sudoku(self, row=0, col=0):
         if row == 9 - 1 and col == 9:
             return True
@@ -38,7 +54,7 @@ class SudokuSolver:
                     return True
             self.grid[row][col] = 0
         return False
-    
+
     @staticmethod
     def nums_to_grid(nums):
         try:
